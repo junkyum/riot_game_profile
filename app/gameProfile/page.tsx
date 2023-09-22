@@ -136,7 +136,7 @@ export default function Index() {
   const [champScore, setchampScore] = useState<ChampScore[]>([]);
   const getLeagueInfo = async () => {
     axios
-      .get<LeagueInfoDTO>("http://localhost:3000/api/league", {
+      .get<LeagueInfoDTO>("https://riot.zeat.me/api/league", {
         params: { name: name, server: server },
       })
       .then((res) => {
@@ -146,7 +146,7 @@ export default function Index() {
   };
   const getMatchInfo = async () => {
     axios
-      .get<MatchInfoDTO[]>("http://localhost:3000/api/match", {
+      .get<MatchInfoDTO[]>("https://riot.zeat.me/api/match", {
         params: { name: name, server: server },
       })
       .then((res) => {
