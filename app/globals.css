@@ -2,26 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@font-face {
+  font-family: "poppins";
+  src: url("/font/poppins_regular.otf");
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+@font-face {
+  font-family: "poppins_bold";
+  src: url("/font/poppins_bold.otf");
+}
+@font-face {
+  font-family: "poppins_semibold";
+  src: url("/font/poppins_semi_bold.otf");
+}
+@font-face {
+  font-family: "pretend";
+  src: url("/font/pretendard_regular.otf");
+}
+@font-face {
+  font-family: "pretend_bold";
+  src: url("/font/pretendard_bold.otf");
+}
+@font-face {
+  font-family: "pretend_semibold";
+  src: url("/font/pretendard_semibold.otf");
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  font-family: pretend, system-ui, -apple-system;
 }
