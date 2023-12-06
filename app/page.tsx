@@ -1,142 +1,123 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+
+type DataType = {
+  gameName: string;
+  tagLine: string;
+  competitiveTier: string;
+  rankedRating: number;
+  numberOfWins: number;
+};
 
 export default function Home() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [server, setServer] = useState<"kr" | "jp" | "na" | "eun" | "euw" | "">(
-    ""
-  );
-  const [done, setDone] = useState(false);
-  const [show, setShow] = useState(false);
-  const doneStyle = done
-    ? "w-fit bg-[#3333FF] px-6 pt-[8px] pb-[9px] rounded-full place-self-end mr-4 mt-[40px]"
-    : "w-fit bg-[#A8AFBC] px-6 pt-[8px] pb-[9px] rounded-full place-self-end mr-4 mt-[40px]";
-  const dropbox = show
-    ? "absolute top-0 left-0 w-full rounded-lg border-[1px] border-[#EAEDF1] bg-[#F7F8FC] overflow-hidden"
-    : "hidden";
-
-  useEffect(() => {
-    setDone(name.trim() != "" && server != "");
-  }, [server, name]);
-  const handleDone = () => {
-    if (done) router.push(`/gameProfile?name=${name}&server=${server}`);
+  const getData = (episode: string, act: string) => {
+    axios
+      .get<DataType[]>(
+        `https://o0t5nlwp2i.execute-api.ap-northeast-2.amazonaws.com/game-api/valorant/rankingBoard/${episode}/${act}`
+      )
+      .then((res) => {
+        setData(res.data);
+      });
   };
+  const [data, setData] = useState<DataType[]>([]);
+  const [cur, setCur] = useState("1");
+  const Radio = ({
+    label,
+    name,
+    value,
+  }: {
+    label: string;
+    value: string[];
+    name: string;
+  }) => {
+    return (
+      <label className="flex-none">
+        <input
+          type="radio"
+          name={name}
+          className="peer hidden"
+          value={value}
+          defaultChecked={cur === value[2]}
+        />
+        <div
+          className="w-fit px-4 py-1.5 text-14 text-text-black bg-gray-200 peer-checked:bg-black peer-checked:text-white rounded-full"
+          onClick={() => {
+            setCur(value[2]);
+            getData(value[0], value[1]);
+          }}
+        >
+          {label}
+        </div>
+      </label>
+    );
+  };
+  const FieldSet = ({ data }: { data: DataType }) => {
+    return (
+      <div className="flex gap-x-2 px-4">
+        <p className="w-2/5 line-clamp-1 text-14 font-semibold">
+          {data.gameName === "Secret Agent"
+            ? data.gameName
+            : `${data.gameName}#${data.tagLine}`}
+        </p>
+        <p className="w-1/5 text-14">{data.competitiveTier}</p>
+        <p className="w-1/5 text-14">{data.rankedRating}</p>
+        <p className="w-1/5 text-14">{data.numberOfWins}</p>
+      </div>
+    );
+  };
+  useEffect(() => {
+    getData("7", "3");
+  }, []);
   return (
     <div className="w-screen flex flex-col">
-      <div className="pt-[13px] pb-[14px] place-self-center">
-        <p className="text-[19px] text-[#1A1B27] font-pop_sb">
-          Add Game Profile
+      <div className="relative h-[56px]">
+        <div className="px-4 pt-5 pb-[21px]">
+          <Image
+            src="/img/header_close.png"
+            alt="close"
+            width={15}
+            height={15}
+          />
+        </div>
+        <p className="absolute top-[13px] left-1/2 -translate-x-1/2 font-pop_sb text-19 text-black">
+          Leaderboard
         </p>
       </div>
-      <p className="text-[15px] text-[#1A1B27] pt-[8px] px-[16px]">
-        Enter your summoner name.
-      </p>
-      <div className="mx-[16px] px-[16px] py-[8px] border-[1px] border-[#EAEDF1] bg-[#F7F8FC] rounded-lg mt-4">
-        <input
-          type="text"
-          className="bg-transparent focus:ring-none focus:outline-none w-full text-[16px] text-[#1A1B27] placeholder:text-[#A8AFBC]"
-          placeholder="Summoner Name"
-          value={name}
-          onChange={(e) => {
-            setName(e.currentTarget.value);
-          }}
-        />
+      <p className="mt-2 mx-4">Check out the VALORANT leadboard.</p>
+      <div className="flex gap-x-2 px-4 mt-2 overflow-x-scroll py-4">
+        <Radio label={`Episode7 - Act3`} name="ep" value={["7", "3", "1"]} />
+        <Radio label={`Episode7 - Act2`} name="ep" value={["7", "2", "2"]} />
+        <Radio label={`Episode7 - Act1`} name="ep" value={["7", "1", "3"]} />
+        <Radio label={`Episode6 - Act3`} name="ep" value={["6", "3", "4"]} />
+        <Radio label={`Episode6 - Act2`} name="ep" value={["6", "2", "5"]} />
+        <Radio label={`Episode6 - Act1`} name="ep" value={["6", "1", "6"]} />
+        <Radio label={`Episode5 - Act3`} name="ep" value={["5", "3", "7"]} />
+        <Radio label={`Episode5 - Act2`} name="ep" value={["5", "2", "8"]} />
+        <Radio label={`Episode5 - Act1`} name="ep" value={["5", "1", "9"]} />
+        <Radio label={`Episode4 - Act3`} name="ep" value={["4", "3", "10"]} />
+        <Radio label={`Episode4 - Act2`} name="ep" value={["4", "2", "11"]} />
+        <Radio label={`Episode4 - Act1`} name="ep" value={["4", "1", "12"]} />
+        <Radio label={`Episode3 - Act3`} name="ep" value={["3", "3", "13"]} />
+        <Radio label={`Episode3 - Act2`} name="ep" value={["3", "2", "14"]} />
+        <Radio label={`Episode3 - Act1`} name="ep" value={["3", "1", "15"]} />
+        <Radio label={`Episode2 - Act3`} name="ep" value={["2", "3", "16"]} />
+        <Radio label={`Episode2 - Act2`} name="ep" value={["2", "2", "17"]} />
+        <Radio label={`Episode2 - Act1`} name="ep" value={["2", "1", "18"]} />
       </div>
-      <p className="text-[15px] text-[#1A1B27] pt-[8px] px-[16px] mt-8">
-        Select a game server.
-      </p>
-      <div className="mx-[16px] px-[16px] py-[8px] border-[1px] border-[#EAEDF1] bg-[#F7F8FC] rounded-lg mt-4 relative">
-        {server == "" ? (
-          <p
-            className="w-full text-[16px] text-[#A8AFBC] select-none"
-            onClick={() => {
-              setShow(true);
-            }}
-          >
-            Select
-          </p>
-        ) : (
-          <p
-            className="w-full text-[16px] text-[#1A1B27] select-none"
-            onClick={() => {
-              setShow(true);
-            }}
-          >
-            {server == "kr"
-              ? "Korea"
-              : server == "jp"
-              ? "Japan"
-              : server == "na"
-              ? "North America"
-              : server == "eun"
-              ? "Europe Nordic & East"
-              : "Europe West"}
-          </p>
-        )}
-        <Image
-          src="/img/input_chevrondown.svg"
-          width={14}
-          height={9}
-          className="absolute right-[10px] top-[15px]"
-          alt="img"
-        />
-        <div className={dropbox}>
-          <ul className="text-[16px] text-[#1A1B27]">
-            <li
-              className="block px-4 py-2 active:bg-[#3333FF] active:text-white select-none"
-              onClick={() => {
-                setServer("kr");
-                setShow(false);
-              }}
-            >
-              Korea
-            </li>
-            <li
-              className=" block px-4 py-2 active:bg-[#3333FF] active:text-white select-none"
-              onClick={() => {
-                setServer("jp");
-                setShow(false);
-              }}
-            >
-              Japan
-            </li>
-            <li
-              className="block px-4 py-2 active:bg-[#3333FF] active:text-white select-none"
-              onClick={() => {
-                setServer("na");
-                setShow(false);
-              }}
-            >
-              North America
-            </li>
-            <li
-              className="block px-4 py-2 active:bg-[#3333FF] active:text-white select-none"
-              onClick={() => {
-                setServer("eun");
-                setShow(false);
-              }}
-            >
-              Europe Nordic & East
-            </li>
-            <li
-              className="block px-4 py-2 active:bg-[#3333FF] active:text-white select-none"
-              onClick={() => {
-                setServer("euw");
-                setShow(false);
-              }}
-            >
-              Europe West
-            </li>
-          </ul>
-        </div>
+      <div className="flex gap-x-2 px-4 mt-2">
+        <p className="w-2/5 text-12 font-semibold">Player Name</p>
+        <p className="w-1/5 text-12 font-semibold">Tier</p>
+        <p className="w-1/5 text-12 font-semibold">Rating</p>
+        <p className="w-1/5 text-12 font-semibold">Wins</p>
       </div>
-
-      <div className={doneStyle} onClick={handleDone}>
-        <p className="font-pop_sb text-[15px] text-white">Done</p>
+      <div className="mx-4 h-[1px] bg-[#D9D9D9] mt-2 mb-4" />
+      <div className="flex flex-col pb-4">
+        {data.map((item, i) => (
+          <FieldSet data={item} key={`${item.gameName}${i}`} />
+        ))}
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "ZEAT",
-  description: "게임 프로필 만들기",
+  description: "Valorant",
 };
 
 export default function RootLayout({
